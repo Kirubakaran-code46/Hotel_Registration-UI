@@ -25,15 +25,27 @@
       <!-- 🔵 Tab Content -->
       <v-window v-model="tab" class="mt-4" transition="fade-transition">
         <v-window-item v-for="(step, index) in registrationSteps" :key="index" :value="index">
+
+          <!-- BASIC CARD -->
           <BasicCard v-if="index == 0" :validateBasicInfo="validateBasicInfo" :UserbasicInfo="basicInfo"
             @validated="nextStage" @changePage="changePage"></BasicCard>
 
-          <LocationCard v-if="index == 1" @changePage="changePage" :UserlocationInfo="locationInfo"></LocationCard>
+          <!-- LOCATION CARD -->
+          <LocationCard v-if="index == 1" @changePage="changePage" :UserlocationInfo="locationInfo || {}"></LocationCard>
+          
+          <!-- ROOM DETAILS CARD -->
           <RoomDetailsCard v-if="index == 2" @changePage="changePage" :roomDetailsArr="roomDetailsArr || []">
           </RoomDetailsCard>
-          <MealsCard v-if="index == 3" @changePage="changePage" :UserMealsInfo="mealsInfo"></MealsCard>
-          <AvailabilityCard v-if="index == 4" @changePage="changePage" :UserAvailabilityInfo="availabilityInfo">
+
+          <!-- MEALS CARD -->
+          <MealsCard v-if="index == 3" @changePage="changePage" :UserMealsInfo="mealsInfo || {}"></MealsCard>
+
+          <!-- AVAILABILITY CARD -->
+          <AvailabilityCard v-if="index == 4" @changePage="changePage" :UserAvailabilityInfo="availabilityInfo || {}">
           </AvailabilityCard>
+
+          <!-- POLICIES CARD -->
+          <PoliciesCard v-if="index == 5" @changePage="changePage" :UserPoliciesInfo="policiesInfo"></PoliciesCard>
         </v-window-item>
       </v-window>
     </v-card-text>
@@ -45,6 +57,7 @@ import BasicCard from './BasicCard.vue';
 import RoomDetailsCard from './RoomDetailsCard.vue';
 import AvailabilityCard from './AvailabilityCard.vue';
 import MealsCard from './MealsCard.vue';
+import PoliciesCard from "./PoliciesCard.vue"
 import Cookies from 'js-cookie';
 import EventServices from '@/Services/EventServices';
 import { useLoaderStore } from "@/stores/loaderStore";
@@ -56,7 +69,8 @@ export default {
     BasicCard,
     RoomDetailsCard,
     MealsCard,
-    AvailabilityCard
+    AvailabilityCard,
+    PoliciesCard
   },
   computed: {
   },
@@ -88,6 +102,7 @@ export default {
       mealsInfo: {},
       roomDetailsArr: [],
       availabilityInfo: {},
+      policiesInfo: {},
       tab: 0,
       MovecurrentTab: false,
       validateBasicInfo: false,
@@ -103,7 +118,6 @@ export default {
         this.MovecurrentTab = false
       }
       // this.tab++;
-      console.log('MovecurrentTab', this.MovecurrentTab);
 
       // this.validateBeforeTabChange(this.tab)
     },
@@ -121,10 +135,8 @@ export default {
     validateBeforeTabChange(v: unknown) {
 
       const newTab = v as number
-      console.log('11111111', newTab, "current", this.tab);
 
       if (this.tab == 0) {
-        console.log('tab===0');
         this.validateBasicInfo = true
       }
 
@@ -143,7 +155,6 @@ export default {
       // } else {
       setTimeout(() => {
         if (this.MovecurrentTab) {
-          console.log('settimeout called');
           
           this.tab = newTab
           this.GetUserDetails(newTab)
@@ -155,10 +166,8 @@ export default {
     GetUserDetails(tabIndex: number) {
       var clientId = Cookies.get('client_id')
       if (!clientId) {
-        console.log('Cookie not found');
         return;
       }
-      console.log('Cookie exists:', clientId);
       var lReq = {
         clientId: clientId,
         stage: this.registrationSteps[tabIndex].label
@@ -171,7 +180,8 @@ export default {
 
       EventServices.GetUserDetails(lReq)
         .then((response) => {
-          console.log("++++", response);
+          console.log('###',response);
+          
           if (response.data.status == "S") {
 
             loader.hide()
@@ -180,6 +190,7 @@ export default {
             this.mealsInfo = response.data.mealsInfo
             this.roomDetailsArr = response.data.roomTypesInfo
             this.availabilityInfo = response.data.availabilityInfo
+            this.policiesInfo = response.data.policiesInfo
             this.tab = tabIndex
 
           }
@@ -195,8 +206,6 @@ export default {
   mounted() {
     this.GetUserDetails(0)
     this.validateBasicInfo = false
-    console.log('mounted');
-
   }
 }
 </script>

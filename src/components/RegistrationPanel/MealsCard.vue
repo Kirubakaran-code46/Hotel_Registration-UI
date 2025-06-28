@@ -11,9 +11,9 @@
                     density="compact"></v-select>
             </v-col>
             <v-col>
-                <v-select label="Types Of Meals Offered" :disabled="UserMealsInfo.isOperationalRestaurant != 'Yes'" chips
-                    multiple v-model="UserMealsInfo.typesOfMeals" :items="typesOfMeals" variant="outlined" color="teal"
-                    density="compact"></v-select>
+                <v-select label="Types Of Meals Offered" :disabled="UserMealsInfo.isOperationalRestaurant != 'Yes'"
+                    chips multiple v-model="UserMealsInfo.typesOfMeals" :items="typesOfMeals" variant="outlined"
+                    color="teal" density="compact"></v-select>
             </v-col>
         </v-row>
         <v-row>

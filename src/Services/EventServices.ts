@@ -37,4 +37,11 @@ export default {
   InsertAvailabilityInfo(data: object) {
     return baseApiClient.post('/insertAvailability', data)
   },
+  //Policies
+  getPoliciesDropdown(){
+    return baseApiClient.get('/getPoliciesDropdown')
+  },
+  InsertPoliciesData(data:object){
+    return baseApiClient.post('/insertPropertyPolicies', data)
+  }
 }

@@ -40,6 +40,7 @@ export default {
         UserlocationInfo: {
             type: Object,
             required: true,
+            default : ()=>({})
         }
     },
     data() {
