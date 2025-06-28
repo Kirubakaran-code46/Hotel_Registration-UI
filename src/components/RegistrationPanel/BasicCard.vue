@@ -64,8 +64,6 @@ export default {
         validateBasicInfo: {
             handler(newVal) {
                 if (newVal) {
-                    console.log('calling validateBasicInfo watcher');
-
                     this.checkBasicValidation()
                 }
             },
@@ -135,35 +133,24 @@ export default {
         },
 
         async checkBasicValidation() {
-            console.log('calling checkBasicValidation function');
-
             const form = this.$refs.inputValidation as InstanceType<typeof VForm>;
             const result = await form?.validate();
 
             if (result?.valid) {
                 this.$emit('validated', true)
-                console.log('emiting validated true');
-
             }
         },
         async insertDetails() {
-            console.log('basic 11111');
-
             const snackbar = useSnackbarStore();
             const loader = useLoaderStore()
             const form = this.$refs.inputValidation as InstanceType<typeof VForm>;
             const result = await form?.validate();
 
             if (result?.valid) {
-                console.log('basic 2222222');
-
                 if (!(JSON.stringify(this.originalBasicInfo) !== JSON.stringify(this.UserbasicInfo))) {
-                    console.log('basic 3333333');
-
                     this.$emit('changePage', 'N');
                     return;
                 }
-                console.log('basic 44444444');
 
                 loader.show()
                 // INSERT OR UPDATE BASIC INFO
@@ -174,7 +161,6 @@ export default {
                             this.originalBasicInfo = JSON.parse(JSON.stringify(this.UserbasicInfo));
                             // this.$emit('validated')
                             this.$emit('validated', true)
-                            console.log('insert basic details & validated true');
                             
                             this.$emit('changePage', 'N');
 
@@ -194,8 +180,6 @@ export default {
         },
     },
     mounted() {
-        console.log('mount');
-
         const snackbar = useSnackbarStore();
         const loader = useLoaderStore()
 

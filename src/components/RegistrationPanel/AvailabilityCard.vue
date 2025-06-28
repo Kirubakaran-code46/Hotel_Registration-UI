@@ -11,7 +11,7 @@
                             prepend-inner-icon="mdi-calendar" />
                     </template>
 
-                    <v-date-picker v-model="internalStartDate" @update:modelValue="handleStartDate" color="teal" />
+                    <v-date-picker hide-header v-model="internalStartDate" @update:modelValue="handleStartDate" color="teal" />
                 </v-menu>
             </v-col>
             <!-- End Date Picker -->
@@ -24,7 +24,7 @@
                             prepend-inner-icon="mdi-calendar" />
                     </template>
 
-                    <v-date-picker v-model="internalEndDate" @update:modelValue="handleEndDate" color="teal" />
+                    <v-date-picker hide-header v-model="internalEndDate" @update:modelValue="handleEndDate" color="teal" />
                 </v-menu>
             </v-col>
         </v-row>
@@ -53,11 +53,7 @@ export default {
     watch: {
         UserAvailabilityInfo: {
             handler(newVal) {
-                console.log('availability not');
-
                 if (!this.isCloned && newVal && Object.keys(newVal).length > 0) {
-                    console.log('avaliability cloned');
-
                     this.originalAvailabilityInfo = JSON.parse(JSON.stringify(newVal));
                     this.isCloned = true;
                 }
@@ -123,12 +119,9 @@ export default {
             }
 
             if (!this.isAvailabilityDateChanged()) {
-                console.log('kiruba');
-
                 this.$emit('changePage', 'N');
                 return;
             }
-            console.log('king');
 
             loader.show()
             EventServices.InsertAvailabilityInfo(this.UserAvailabilityInfo)

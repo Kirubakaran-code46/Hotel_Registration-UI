@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-5 mt-10">
+    <div class="mx-5 mt-10">{{ roomDetailsArr }}
         <div v-for="(room, index) in roomForms" :key="index">
             <v-chip class="mb-5" color="orange">Room Type {{ index + 1 }}</v-chip>
             <v-row>
@@ -123,19 +123,13 @@ export default {
     watch: {
         roomDetailsArr: {
             handler(newVal) {
-                console.log('handler');
-
                 if (!this.isCloned && newVal && newVal.length > 0) {
-                    console.log('dbdata');
-
                     this.roomForms = JSON.parse(JSON.stringify(newVal));
                     this.originalRoomForms = JSON.parse(JSON.stringify(newVal));
 
                     // this.isCloned = true;
                 }
                 else {
-                    console.log('new data');
-
                     this.roomForms = [this.createRoomType()]; // Insert mode
                     this.originalRoomForms = [this.createRoomType()]; // Insert mode
                 }
@@ -194,16 +188,12 @@ export default {
         submitAllRooms() {
 
             if (!this.isRoomFormChanged()) {
-                console.log('changeopage');
-
                 this.$emit('changePage', 'N');
                 return;
             }
-            console.log('update data');
 
             const snackbar = useSnackbarStore()
             const loader = useLoaderStore()
-            console.log(this.roomForms);
             const val = {
                 roomsArr: this.roomForms
             }
@@ -213,7 +203,6 @@ export default {
                 .then((response) => {
 
                     if (response.data.status == 'S') {
-                        console.log(response);
                         this.$emit('changePage', 'N');
                         loader.hide()
                     } else {
@@ -242,6 +231,7 @@ export default {
                     this.roomView = response.data.roomView
                 } else {
                     snackbar.show(response.data.status, response.data.msg)
+                    loader.hide()
                 }
             })
             .catch((error) => {
