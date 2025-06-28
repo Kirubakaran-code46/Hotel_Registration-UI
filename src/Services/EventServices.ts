@@ -1,28 +1,40 @@
-import axios from "axios";
+import axios from 'axios'
 
 const baseApiClient = axios.create({
-  baseURL: "http://localhost:8081",
+  baseURL: 'http://localhost:8081',
   withCredentials: true,
   headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
   },
-});
+})
 
 export default {
-  getEmpDetails() {
-    return baseApiClient.get("/getDashboardDetails");
+  GetPropertyTypes() {
+    return baseApiClient.get('/getPropertyTypes')
   },
-  GetRoleTaskDetails(){
-    return baseApiClient.get("/getRoleTaskDetails")
+  InsertBasicInfo(data: object) {
+    return baseApiClient.post('/insertBasicInfo', data)
   },
-  addRoleAndTaskDetails(data: Object){
-    return baseApiClient.post("/addRoleTaskDetails",data)
+  InsertLocationInfo(data: object) {
+    return baseApiClient.post('/insertLocationInfo', data)
   },
-  getRoleTaskDropdown(){
-    return baseApiClient.get("/getRoleTaskDropdown")
+  GetUserDetails(data: object) {
+    return baseApiClient.post('/getUserInfo', data)
   },
-  updateRoleAndTask(data:Object){
-    return baseApiClient.post("/updtRoleAndTask",data)
-  }
-};
+  GetStates() {
+    return baseApiClient.get('/getStates')
+  },
+  GetRoomDropDown() {
+    return baseApiClient.get('/getRoomDropdown')
+  },
+  InsertRoomsArr(data: object) {
+    return baseApiClient.post('/inserRoomDetails', data)
+  },
+  InsertMealsInfo(data: object) {
+    return baseApiClient.post('/insertMealsInfo', data)
+  },
+  InsertAvailabilityInfo(data: object) {
+    return baseApiClient.post('/insertAvailability', data)
+  },
+}

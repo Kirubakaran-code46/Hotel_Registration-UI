@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Dashboard from '@/components/Dashboard/dashboard.vue'
-import RoleAndTask from '@/components/RoleAndTask/RoleAndTask.vue'
+import Dashboard from '@/views/hotelRegistry.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,11 +8,6 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: Dashboard,
-    },
-    {
-      path: '/roleAndTask',
-      name: 'RoleAndTask',
-      component: RoleAndTask,
     },
   ],
 })
