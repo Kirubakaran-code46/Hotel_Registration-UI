@@ -1,6 +1,6 @@
 <template>
   <v-card class="mx-10 my-10" elevation="12">
-    <v-card-title>{{ validateBasicInfo }}
+    <v-card-title>
       <v-row>
         <v-col>
           <v-img src="/PYOLLIV PNG.png" width="160" height="70" />
@@ -31,8 +31,9 @@
             @validated="nextStage" @changePage="changePage"></BasicCard>
 
           <!-- LOCATION CARD -->
-          <LocationCard v-if="index == 1" @changePage="changePage" :UserlocationInfo="locationInfo || {}"></LocationCard>
-          
+          <LocationCard v-if="index == 1" @changePage="changePage" :UserlocationInfo="locationInfo || {}">
+          </LocationCard>
+
           <!-- ROOM DETAILS CARD -->
           <RoomDetailsCard v-if="index == 2" @changePage="changePage" :roomDetailsArr="roomDetailsArr || []">
           </RoomDetailsCard>
@@ -46,6 +47,16 @@
 
           <!-- POLICIES CARD -->
           <PoliciesCard v-if="index == 5" @changePage="changePage" :UserPoliciesInfo="policiesInfo"></PoliciesCard>
+
+          <!-- DOCS INFO CARD -->
+          <DocsCard v-if="index == 6" @changePage="changePage" :UserDocsInfo="docsInfo || {}"></DocsCard>
+
+          <!-- PROPERTY DETAILS CARD -->
+          <PropertyDetailsCard v-if="index == 7" @changePage="changePage" :UserPropertyInfo="propertyInfo || {}">
+          </PropertyDetailsCard>
+
+          <!-- NOTES AND LAST CARD -->
+          <NotesCard v-if="index == 8" @changePage="changePage" :UserDescriptionInfo="descriptionInfo"></NotesCard>
         </v-window-item>
       </v-window>
     </v-card-text>
@@ -57,7 +68,10 @@ import BasicCard from './BasicCard.vue';
 import RoomDetailsCard from './RoomDetailsCard.vue';
 import AvailabilityCard from './AvailabilityCard.vue';
 import MealsCard from './MealsCard.vue';
-import PoliciesCard from "./PoliciesCard.vue"
+import PoliciesCard from "./PoliciesCard.vue";
+import DocsCard from "./DocsInfo.vue";
+import PropertyDetailsCard from './PropertyDetailsCard.vue';
+import NotesCard from './NotesCard.vue';
 import Cookies from 'js-cookie';
 import EventServices from '@/Services/EventServices';
 import { useLoaderStore } from "@/stores/loaderStore";
@@ -70,7 +84,10 @@ export default {
     RoomDetailsCard,
     MealsCard,
     AvailabilityCard,
-    PoliciesCard
+    PoliciesCard,
+    DocsCard,
+    PropertyDetailsCard,
+    NotesCard
   },
   computed: {
   },
@@ -84,7 +101,7 @@ export default {
         { label: 'Availability', icon: 'mdi-calendar-check' },
         { label: 'Policies', icon: 'mdi-file-document' },
         { label: 'Docs', icon: 'mdi-folder' },
-        { label: 'Property Details', icon: 'mdi-home-city' },
+        { label: 'Property Images', icon: 'mdi-home-city' },
         { label: 'Notes', icon: 'mdi-note-text' },
       ],
       basicInfo: {
@@ -92,7 +109,7 @@ export default {
         propertyType: "",
         starCategory: "",
         yearOfConstruction: "",
-        mobileCode: "91",
+        mobileCode: "+ 91",
         primaryMobile: "",
         secondaryMobile: "",
         email: "",
@@ -103,6 +120,9 @@ export default {
       roomDetailsArr: [],
       availabilityInfo: {},
       policiesInfo: {},
+      docsInfo: {},
+      propertyInfo: {},
+      descriptionInfo: "",
       tab: 0,
       MovecurrentTab: false,
       validateBasicInfo: false,
@@ -129,7 +149,6 @@ export default {
       } else if (direction === 'N') {
         this.tab++;
         this.validateBeforeTabChange(this.tab)
-
       }
     },
     validateBeforeTabChange(v: unknown) {
@@ -155,7 +174,7 @@ export default {
       // } else {
       setTimeout(() => {
         if (this.MovecurrentTab) {
-          
+
           this.tab = newTab
           this.GetUserDetails(newTab)
         }
@@ -180,8 +199,8 @@ export default {
 
       EventServices.GetUserDetails(lReq)
         .then((response) => {
-          console.log('###',response);
-          
+          console.log('###', response);
+
           if (response.data.status == "S") {
 
             loader.hide()
@@ -191,11 +210,15 @@ export default {
             this.roomDetailsArr = response.data.roomTypesInfo
             this.availabilityInfo = response.data.availabilityInfo
             this.policiesInfo = response.data.policiesInfo
+            this.docsInfo = response.data.docsInfo
+            this.propertyInfo = response.data.propertyPicInfo
+            this.descriptionInfo = response.data.description
             this.tab = tabIndex
 
           }
           else {
             snackbar.show(response.data.status, response.data.msg)
+            loader.hide()
           }
         }).catch((error) => {
           console.log(error);

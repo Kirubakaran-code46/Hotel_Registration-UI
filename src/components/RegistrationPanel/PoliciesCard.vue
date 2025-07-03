@@ -62,7 +62,6 @@
                     </v-card>
                 </v-dialog>
             </v-col>
-            {{ UserPoliciesInfo }}
             <!-- ********************************************************* -->
             <!-- <v-col>
 
@@ -107,7 +106,6 @@
                     density="compact" variant="outlined" v-model="UserPoliciesInfo.allow_onlymale_guests" />
             </v-col>
         </v-row>
-        {{ originalPoliciesInfo }}
 
         <v-row>
             <v-col cols="12" md="4">
@@ -150,10 +148,14 @@
 
         <v-row>
             <v-col class="d-flex justify-start mb-10 mr-10">
-                <v-btn color="teal" @click="previousPage('B')">Back</v-btn>
+                <v-btn color="teal-darken-4" @click="previousPage('B')">
+                    <v-icon icon="mdi-rewind" start></v-icon>
+                    Back</v-btn>
             </v-col>
             <v-col class="d-flex justify-end mb-10 mr-10">
-                <v-btn color="teal" @click="insertPoliciesInfo">Next</v-btn>
+                <v-btn color="teal-darken-4" @click="insertPoliciesInfo">Next
+                    <v-icon icon="mdi-fast-forward" end></v-icon>
+                </v-btn>
             </v-col>
         </v-row>
     </div>
@@ -178,25 +180,15 @@ export default {
     watch: {
         UserPoliciesInfo: {
             handler(newVal) {
-                console.log('watch');
                 this.rawCheckInTime = this.convertTo24Hour(newVal.check_in || '');
                 this.rawCheckOutTime = this.convertTo24Hour(newVal.check_out || '');
-                console.log('this.isCloned', this.isCloned);
-                console.log('Object.keys(newVal).length > 0', Object.keys(newVal).length > 0);
-                console.log('newVal', newVal);
 
                 if (!this.isCloned) {
-                    console.log(1111);
 
-                    this.originalPoliciesInfo = {...newVal}
-                    this.PoliciesInfo = {...newVal}
+                    this.originalPoliciesInfo = { ...newVal }
+                    this.PoliciesInfo = { ...newVal }
                     this.isCloned = true;
                 }
-
-
-
-
-
                 // if (!this.isCloned && newVal && Object.keys(newVal).length > 0) {
                 //     // this.originalPoliciesInfo = JSON.parse(JSON.stringify(newVal));
                 //     this.originalPoliciesInfo = {...newVal}
@@ -334,8 +326,6 @@ export default {
         loader.show()
         EventServices.getPoliciesDropdown()
             .then((response) => {
-                console.log(response);
-
                 if (response.data.status == 'S') {
                     loader.hide()
                     this.identityProofArr = response.data.identityProofs
