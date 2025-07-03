@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-5 mt-10">{{ UserlocationInfo }}
+    <div class="mx-5 mt-10">
         <v-row>
             <v-col>
                 <v-text-field color="teal" label="Address Line 1" density="compact" v-model="UserlocationInfo.addrLine1"
@@ -14,18 +14,23 @@
             <v-col cols="12" md="4"> <v-text-field color="teal" label="City" density="compact"
                     v-model="UserlocationInfo.city" variant="outlined" /></v-col>
             <v-col cols="12" md="4">
-                <v-select :items="stateNames" color="teal" label="State" density="compact" v-model="UserlocationInfo.state"
-                    variant="outlined"></v-select>
+                <v-select :items="stateNames" color="teal" label="State" density="compact"
+                    v-model="UserlocationInfo.state" variant="outlined"></v-select>
             </v-col>
             <v-col cols="12" md="4"> <v-text-field color="teal" label="Zip Code" density="compact" type="number"
                     v-model="UserlocationInfo.zipcode" variant="outlined" /></v-col>
         </v-row>
         <v-row>
             <v-col class="d-flex justify-start mb-10 mr-10">
-                <v-btn color="teal" @click="previousPage('B')">Back</v-btn>
+                <v-btn color="teal-darken-4" @click="previousPage('B')">
+                    <v-icon icon="mdi-rewind" start></v-icon>
+                    Back</v-btn>
             </v-col>
             <v-col class="d-flex justify-end mb-10 mr-10">
-                <v-btn color="teal" @click="insertLocationInfo">Next</v-btn>
+                <v-btn color="teal-darken-4" @click="insertLocationInfo">Next
+                    <v-icon icon="mdi-fast-forward" end></v-icon>
+
+                </v-btn>
             </v-col>
         </v-row>
     </div>
@@ -40,14 +45,14 @@ export default {
         UserlocationInfo: {
             type: Object,
             required: true,
-            default : ()=>({})
+            default: () => ({})
         }
     },
     data() {
         return {
             originalLocationInfo: {} as any,
             isCloned: false,
-            stateNames:[],
+            stateNames: [],
         }
     },
     watch: {
@@ -98,22 +103,22 @@ export default {
     },
     mounted() {
         const snackbar = useSnackbarStore();
-            const loader = useLoaderStore()
-            loader.show()
+        const loader = useLoaderStore()
+        loader.show()
 
         EventServices.GetStates()
-         .then((response) => {
-                    if (response.data.status == "S") {
-                        loader.hide()
-                        this.stateNames = response.data.stateNames
-                    }
-                    else {
-                        snackbar.show(response.data.status, response.data.msg)
-                    }
-                }).catch((error) => {
-                    console.log(error);
+            .then((response) => {
+                if (response.data.status == "S") {
                     loader.hide()
-                })
+                    this.stateNames = response.data.stateNames
+                }
+                else {
+                    snackbar.show(response.data.status, response.data.msg)
+                }
+            }).catch((error) => {
+                console.log(error);
+                loader.hide()
+            })
     },
 }
 </script>

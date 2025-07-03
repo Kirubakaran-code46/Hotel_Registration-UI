@@ -1,7 +1,11 @@
 <template>
-    <div class="mx-5 mt-10">{{ roomDetailsArr }}
+    <div class="mx-5 mt-10">
         <div v-for="(room, index) in roomForms" :key="index">
-            <v-chip class="mb-5" color="orange">Room Type {{ index + 1 }}</v-chip>
+            <v-chip class="mb-5"  color="teal" variant="flat" label>
+            <v-icon icon="mdi-bed" start></v-icon>
+            Room Type  {{ index + 1 }}</v-chip>
+
+
             <v-row>
                 <v-col cols="12" md="4">
                     <v-select v-model="room.roomType" :items="roomTypes" color="teal" label="Room Type"
@@ -86,12 +90,14 @@
             </v-row>
             <v-row>
                 <v-col class="d-flex justify-start mr-10" v-if="roomForms.length > 1">
-                    <v-btn @click="removeRoomType(index)" class="text-none" prepend-icon="mdi-close-box"
-                        color="error">Remove Room</v-btn>
+                        <v-btn size="small" variant="tonal" @click="removeRoomType(index)" class="text-none"
+                        prepend-icon="mdi-close-box" color="warning">Remove
+                        Room</v-btn>
                 </v-col>
 
                 <v-col class="d-flex justify-end mr-10" v-if="index === roomForms.length - 1">
-                    <v-btn class="text-none" prepend-icon="mdi-plus-box" color="teal" @click="addRoomType">Add
+                        <v-btn size="small" variant="tonal" class="text-none" prepend-icon="mdi-plus-box" color="teal"
+                        @click="addRoomType">Add
                         Room</v-btn>
                 </v-col>
             </v-row>
@@ -99,10 +105,15 @@
         </div>
         <v-row>
             <v-col class="d-flex justify-start mb-10 mr-10">
-                <v-btn color="teal" @click="previousPage('B')">Back</v-btn>
+                <v-btn color="teal-darken-4" @click="previousPage('B')">
+                    <v-icon icon="mdi-rewind" start></v-icon>
+                    Back</v-btn>
             </v-col>
             <v-col class="d-flex justify-end mb-10 mr-10">
-                <v-btn color="teal" @click="submitAllRooms">Next</v-btn>
+                <v-btn color="teal-darken-4" @click="submitAllRooms">Next
+            <v-icon icon="mdi-fast-forward" end></v-icon>
+
+                </v-btn>
             </v-col>
         </v-row>
     </div>

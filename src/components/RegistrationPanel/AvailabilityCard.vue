@@ -1,6 +1,6 @@
 <template>
     <div class="mx-5 mt-10">
-        <v-row dense>
+        <v-row>
             <!-- Start Date Picker -->
             <v-col cols="12" sm="6">
                 <v-menu v-model="startMenu" :close-on-content-click="false" transition="scale-transition" offset-y
@@ -30,10 +30,14 @@
         </v-row>
         <v-row>
             <v-col class="d-flex justify-start mb-10 mr-10">
-                <v-btn color="teal" @click="previousPage('B')">Back</v-btn>
+                <v-btn color="teal-darken-4" @click="previousPage('B')">
+                    <v-icon icon="mdi-rewind" start></v-icon>
+                    Back</v-btn>
             </v-col>
             <v-col class="d-flex justify-end mb-10 mr-10">
-                <v-btn color="teal" @click="insertAvailabilityInfo">Next</v-btn>
+                <v-btn color="teal-darken-4" @click="insertAvailabilityInfo">Next
+            <v-icon icon="mdi-fast-forward" end></v-icon>
+                </v-btn>
             </v-col>
         </v-row>
     </div>
@@ -84,13 +88,13 @@ export default {
         },
     },
     methods: {
-        handleStartDate(val: string) {
+        handleStartDate(val: string | null) {
             this.startMenu = false;
-            this.UserAvailabilityInfo.startDate = this.formatDate(val);
+            this.UserAvailabilityInfo.startDate = val ? this.formatDate(val) :'';
         },
-        handleEndDate(val: string) {
+        handleEndDate(val: string | null) {
             this.endMenu = false;
-            this.UserAvailabilityInfo.endDate = this.formatDate(val);
+            this.UserAvailabilityInfo.endDate =val ? this.formatDate(val) : '';
         },
         formatDate(dateVal: string | number | Date): string {
             const date = new Date(dateVal);

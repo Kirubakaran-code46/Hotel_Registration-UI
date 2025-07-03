@@ -27,10 +27,14 @@
 
         <v-row>
             <v-col class="d-flex justify-start mb-10 mr-10">
-                <v-btn color="teal" @click="previousPage('B')">Back</v-btn>
+                <v-btn color="teal-darken-4" @click="previousPage('B')">
+                    <v-icon icon="mdi-rewind" start></v-icon>
+                    Back</v-btn>
             </v-col>
             <v-col class="d-flex justify-end mb-10 mr-10">
-                <v-btn color="teal" @click="insertMealsInfo">Next</v-btn>
+                <v-btn color="teal-darken-4" @click="insertMealsInfo">Next
+                    <v-icon icon="mdi-fast-forward" end></v-icon>
+                </v-btn>
             </v-col>
         </v-row>
     </div>

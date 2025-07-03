@@ -24,8 +24,9 @@
                     <v-text-field color="teal" :rules="phoneRules" type="number" label="Primary Phone Number"
                         density="compact" v-model="UserbasicInfo.primaryMobile" max="10" variant="outlined" />
                 </v-col>
-                <v-col cols="12" md="4"> <v-text-field color="teal" label="Secondary Phone Number" density="compact"
-                        v-model="UserbasicInfo.secondaryMobile" variant="outlined" /></v-col>
+                <v-col cols="12" md="4"> <v-text-field :rules="secondaryMobileRule" color="teal"
+                        label="Secondary Phone Number" density="compact" v-model="UserbasicInfo.secondaryMobile"
+                        max="10" variant="outlined" /></v-col>
                 <v-col cols="12" md="4"> <v-text-field color="teal" :rules="emailRules" label="Email" density="compact"
                         v-model="UserbasicInfo.email" variant="outlined" /></v-col>
             </v-row>
@@ -36,11 +37,12 @@
                     Manager" density="compact" v-model="UserbasicInfo.channelManager"
                         variant="outlined"></v-select></v-col>
 
-                <!-- <v-btn @click="testmeth">check</v-btn> -->
             </v-row>
             <v-row>
                 <v-col class="d-flex justify-end mb-10 mr-10">
-                    <v-btn color="teal" type="submit">Next</v-btn>
+                    <v-btn color="teal-darken-4" type="submit">Next
+            <v-icon icon="mdi-fast-forward" end></v-icon>
+                    </v-btn>
                 </v-col>
             </v-row>
         </v-form>
@@ -103,6 +105,12 @@ export default {
                 (v: string) => !!v || 'Mobile Number is required', // Check if the email is not empty
                 (v: string) => /^\d{10}$/.test(v) || 'Must contain exactly 10 digits'
             ],
+            secondaryMobileRule: [
+                (v: string) => {
+                    if (!v) return true; // allow empty
+                    return /^\d{10}$/.test(v) || 'Must contain exactly 10 digits';
+                }
+            ],
             emailRules: [
                 (v: string) => !!v || 'Email is required', // Check if the email is not empty
                 (v: string) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v) || 'Invalid email address', // Email validation regex
@@ -161,7 +169,7 @@ export default {
                             this.originalBasicInfo = JSON.parse(JSON.stringify(this.UserbasicInfo));
                             // this.$emit('validated')
                             this.$emit('validated', true)
-                            
+
                             this.$emit('changePage', 'N');
 
                         }

@@ -8,7 +8,7 @@ export const useGlobalStageStore = defineStore('globalStage', {
       propertyType: '',
       starCategory: '',
       yearOfConstruction: '',
-      mobileCode: '91',
+      mobileCode: '+ 91',
       primaryMobile: '',
       secondaryMobile: '',
       email: '',

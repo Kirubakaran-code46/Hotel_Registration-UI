@@ -43,5 +43,31 @@ export default {
   },
   InsertPoliciesData(data:object){
     return baseApiClient.post('/insertPropertyPolicies', data)
+  },
+  // Docs Info
+  insertDocsInfo(data:object){
+    const hdr = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+    return baseApiClient.post('/insertDocsInfo',data,hdr)
+  },
+  // Property Pics Info
+  InsertPropertyInfo(data:object){
+    const hdr = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+    return baseApiClient.post('/insertPropertyInfo',data,hdr)
+  },
+  // Notes / Description
+  InsertDescInfo(data:object){
+    return baseApiClient.post('/insertDescInfo', data)
+  },
+  // Clear Session
+  ClearSession(){
+    return baseApiClient.get('/clearSession')
   }
 }
