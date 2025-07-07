@@ -15,8 +15,8 @@
         class="mb-4" />
 
       <v-tabs :model-value="tab" grow show-arrows color="teal" class="text--capitalize"
-        @update:modelValue="validateBeforeTabChange">
-        <v-tab v-for="(step, index) in registrationSteps" :key="index" :value="index" class="text-none">
+        @update:modelValue="validateBeforeTabChange" bg-color="teal-lighten-5">
+        <v-tab v-for="(step, index) in registrationSteps" :key="index" :value="index" class="text-none" >
           <v-icon class="mr-1" color="teal" left>{{ step.icon }}</v-icon>
           {{ step.label }}
         </v-tab>

@@ -1,12 +1,10 @@
 <template>
     <div class="mx-5">
-        <v-chip class="my-5" color="teal" variant="flat" label>
-            Bank Details</v-chip>
+        <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+            <strong>Bank Details</strong>
+        </v-alert>
         <v-row>
-            <v-col>
-                <v-text-field v-model="UserDocsInfo.bankName" color="teal" label="Bank Name" density="compact"
-                    variant="outlined" />
-            </v-col>
+
             <v-col>
                 <v-text-field v-model="UserDocsInfo.accountNumber" color="teal" label="Account Number" density="compact"
                     variant="outlined" />
@@ -15,20 +13,39 @@
                 <v-text-field v-model="UserDocsInfo.accHolderName" color="teal" label="Account Holders Name"
                     density="compact" variant="outlined" />
             </v-col>
+            <v-col>
+                <v-text-field v-model="UserDocsInfo.IFSC_Code" @input="GetIFSCinfo" color="teal" label="IFSC Code"
+                    density="compact" variant="outlined" :rules="ifscRules" />
+            </v-col>
         </v-row>
         <v-row>
             <v-col cols="12" md="4">
-                <v-text-field v-model="UserDocsInfo.IFSC_Code" color="teal" label="IFSC Code" density="compact"
-                    variant="outlined" />
+                <v-text-field v-model="UserDocsInfo.bankName" color="teal" label="Bank Name" density="compact"
+                    variant="outlined" disabled />
             </v-col>
             <v-col cols="12" md="4">
                 <v-text-field v-model="UserDocsInfo.Branch" color="teal" label="Branch" density="compact"
-                    variant="outlined" />
+                    variant="outlined" disabled />
+            </v-col>
+            <v-col cols="12" md="4">
+                <v-text-field v-model="UserDocsInfo.ifsc_city" color="teal" label="city" density="compact"
+                    variant="outlined" disabled />
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-text-field v-model="UserDocsInfo.ifsc_Address" color="teal" label="Bank Address" density="compact"
+                    variant="outlined" disabled />
+            </v-col>
+            <v-col>
+                <v-text-field v-model="UserDocsInfo.ifsc_State" color="teal" label="State" density="compact"
+                    variant="outlined" disabled />
             </v-col>
         </v-row>
 
-        <v-chip class="my-5" color="teal" variant="flat" label>
-            GST Details</v-chip>
+        <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+            <strong>GST Details</strong>
+        </v-alert>
 
         <v-row>
             <v-col cols="12" md="6">
@@ -56,7 +73,11 @@
             </v-col>
         </v-row>
         <!-- ****************************PROPERTY OWNERSHIP************* -->
-        <v-chip class="my-5" color="teal" variant="flat" label>Property Ownership</v-chip>
+
+        <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+            <strong>Property Ownership</strong>
+        </v-alert>
+
         <v-row>
             <v-col cols="12"
                 :md="UserDocsInfo.PropertyOwnership == 'Lease Property' || UserDocsInfo.PropertyOwnership == 'Management Property' ? '4' : '6'">
@@ -95,8 +116,10 @@
             </v-col>
         </v-row>
         <!-- ************************************************ -->
-        <v-chip class="my-5" variant="flat" color="teal" label>
-            Utility Types</v-chip>
+
+            <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+            <strong>Utility Types</strong>
+        </v-alert>
 
         <!-- <v-btn color="teal" class="mb-4" @click="addUtility">Add Utility</v-btn> -->
 
@@ -130,8 +153,10 @@
             <v-divider class="my-3"></v-divider>
         </div>
         <!-- ************************************************ -->
-        <v-chip class="my-5" variant="flat" color="teal" label>
-            Cancelled Cheque</v-chip>
+
+            <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+            <strong>Cancelled Cheque</strong>
+        </v-alert>
         <v-row>
 
             <!-- <v-col cols="12" md="5" v-if="!chequeFileInsertVisible">
@@ -154,7 +179,7 @@
         </v-row>
         <v-row>
             <v-col class="d-flex justify-start mb-10 mr-10">
-                <v-btn color="teal-darken-4"  @click="previousPage('B')">
+                <v-btn color="teal-darken-4" @click="previousPage('B')">
                     <v-icon icon="mdi-rewind" start></v-icon>
                     Back</v-btn>
             </v-col>
@@ -265,6 +290,11 @@ export default {
         formattedEndDate() {
             return this.formatDate(this.UserDocsInfo.endDate);
         },
+        ifscRules() {
+            return [
+                (v) => /^[A-Z]{4}0[A-Z0-9]{6}$/.test(v) || "Invalid IFSC format",
+            ];
+        }
     },
     data() {
         return {
@@ -303,6 +333,29 @@ export default {
         };
     },
     methods: {
+        GetIFSCinfo() {
+            this.UserDocsInfo.IFSC_Code = this.UserDocsInfo.IFSC_Code.toUpperCase()
+
+            const isValidIFSC = /^[A-Z]{4}0[A-Z0-9]{6}$/.test(this.UserDocsInfo.IFSC_Code);
+
+            if (this.UserDocsInfo.IFSC_Code.length === 11 && isValidIFSC) {
+                const lData = {
+                    ifsc: this.UserDocsInfo.IFSC_Code
+                }
+                EventServices.GetIFSCDetails(lData).
+                    then((response) => {
+                        console.log(response);
+                        this.UserDocsInfo.bankName = response.data.IFSCdata.BANK
+                        this.UserDocsInfo.Branch = response.data.IFSCdata.BRANCH
+                        this.UserDocsInfo.ifsc_city = response.data.IFSCdata.CITY
+                        this.UserDocsInfo.ifsc_Address = response.data.IFSCdata.ADDRESS
+                        this.UserDocsInfo.ifsc_State = response.data.IFSCdata.STATE
+
+                        console.log(this.UserDocsInfo.bankName);
+
+                    })
+            }
+        },
         previousPage(val) {
             this.$emit('changePage', val);
         },
@@ -356,13 +409,13 @@ export default {
             if (this.UserDocsInfo.PropertyOwnership != 'Own Property') {
                 const lStartDate = new Date(this.UserDocsInfo.startDate)
                 const lEndDate = new Date(this.UserDocsInfo.endDate)
-    
+
                 if (lEndDate < lStartDate) {
                     snackbar.show("E", "End Date cannot be earlier than Start Date");
                     return;
                 }
             }
-            
+
             var lFormData = new FormData();
             const payload = {
                 bankName: this.UserDocsInfo.bankName,
@@ -376,7 +429,10 @@ export default {
                 utilities: [],
                 PropertyOwnership: this.UserDocsInfo.PropertyOwnership,
                 startDate: this.UserDocsInfo.PropertyOwnership == 'Own Property' ? '' : this.UserDocsInfo.startDate,
-                endDate: this.UserDocsInfo.PropertyOwnership == 'Own Property' ? '' : this.UserDocsInfo.endDate
+                endDate: this.UserDocsInfo.PropertyOwnership == 'Own Property' ? '' : this.UserDocsInfo.endDate,
+                ifsc_city: this.UserDocsInfo.ifsc_city,
+                ifsc_Address: this.UserDocsInfo.ifsc_Address,
+                ifsc_State: this.UserDocsInfo.ifsc_State
             }
 
             console.log('payload.startDate', payload.startDate);

@@ -41,7 +41,7 @@
             <v-row>
                 <v-col class="d-flex justify-end mb-10 mr-10">
                     <v-btn color="teal-darken-4" type="submit">Next
-            <v-icon icon="mdi-fast-forward" end></v-icon>
+                        <v-icon icon="mdi-fast-forward" end></v-icon>
                     </v-btn>
                 </v-col>
             </v-row>
@@ -125,6 +125,7 @@ export default {
             return [
                 (v: string | number) => !!v || 'Year is required',
                 (v: string | number) => /^\d{4}$/.test(String(v)) || 'Enter a valid 4-digit year',
+                (v: string | number) => parseInt(String(v)) > 1950 || 'Year must be greater than 1950',
                 (v: string | number) => parseInt(String(v)) <= this.currentYear || `Year can't be in the future`
             ]
         }
