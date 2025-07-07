@@ -1,9 +1,10 @@
 <template>
     <div class="mx-5 mt-10">
         <div v-for="(room, index) in roomForms" :key="index">
-            <v-chip class="mb-5"  color="teal" variant="flat" label>
+            <v-alert class="mb-8" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
             <v-icon icon="mdi-bed" start></v-icon>
-            Room Type  {{ index + 1 }}</v-chip>
+            <strong>Room Type  {{ index + 1 }}</strong>
+        </v-alert>
 
 
             <v-row>

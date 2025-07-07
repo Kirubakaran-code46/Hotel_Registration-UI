@@ -1,7 +1,8 @@
 <template>
     <div class="mx-5">
-        <v-chip class="my-5" color="teal" variant="flat" label>
-            Property Images</v-chip>
+            <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+            <strong>Property Images</strong>
+        </v-alert>
         <v-row>
             <!-- <v-col v-for="field in fields" :key="field.key" cols="12" md="4">
                 <v-text-field :label="field.label" v-if="UserPropertyInfo[field.key]"

@@ -1,6 +1,9 @@
 <template>
     <div class="mx-5">
-        <v-chip class="my-5" color="teal" label>Check-in / Check-out Policy</v-chip>
+            <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+            <strong>Check-in / Check-out Policy</strong>
+        </v-alert>
+
         <v-row>
 
             <!-- <v-text-field v-model="formattedCheckInTime" density="compact" variant="outlined"
@@ -83,7 +86,9 @@
             </v-col>
         </v-row>
 
-        <v-chip class="my-5" color="teal" label>Cancellation Policy</v-chip>
+            <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+            <strong>Cancellation Policy</strong>
+            </v-alert>
         <v-row>
             <v-col cols="12" md="4">
                 <v-select :items="CancellationPoliciesArr" color="teal" label="Cancellation Policy" density="compact"
@@ -91,7 +96,9 @@
             </v-col>
         </v-row>
 
-        <v-chip class="my-5" color="teal" label>Property Rules</v-chip>
+            <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+            <strong>Property Rules</strong>
+            </v-alert>
         <v-row>
             <v-col cols="12" md="4">
                 <v-select :items="YesOrNoArr" color="teal" label="Do you allow unmarried coupled ?" density="compact"
@@ -136,8 +143,12 @@
                     density="compact" variant="outlined" v-model="UserPoliciesInfo.accepted_proofs" />
             </v-col>
         </v-row>
+        
+            <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+            <strong>Custom Property Rules</strong>
+            </v-alert>
 
-        <v-chip class="my-5" color="teal" label>Custom Property Rules</v-chip>
+
         <v-row>
             <v-col cols="12" md="4">
                 <v-text-field :items="YesOrNoArr" color="teal" label="Additional Property Rules" density="compact"

@@ -53,6 +53,9 @@ export default {
     };
     return baseApiClient.post('/insertDocsInfo',data,hdr)
   },
+  GetIFSCDetails(data:object){
+    return baseApiClient.post('/getIFSCdetails', data)
+  },
   // Property Pics Info
   InsertPropertyInfo(data:object){
     const hdr = {
