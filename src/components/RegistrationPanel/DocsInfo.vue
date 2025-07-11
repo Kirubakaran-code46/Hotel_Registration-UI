@@ -34,8 +34,8 @@
         </v-row>
         <v-row>
             <v-col>
-                <v-text-field v-model="UserDocsInfo.ifsc_Address" color="teal" label="Bank Address" density="compact"
-                    variant="outlined" disabled />
+                <v-textarea v-model="UserDocsInfo.ifsc_Address" color="teal" label="Bank Address" density="compact"
+                    variant="outlined" disabled auto-grow rows="1"></v-textarea>
             </v-col>
             <v-col>
                 <v-text-field v-model="UserDocsInfo.ifsc_State" color="teal" label="State" density="compact"
@@ -231,27 +231,17 @@ export default {
     watch: {
         UserDocsInfo: {
             handler(newVal) {
-                console.log('watch');
-
                 this.utilities = JSON.parse(JSON.stringify(newVal.utilities));
                 this.originalUtilities = JSON.parse(JSON.stringify(newVal.utilities));
                 this.gstDocId = newVal.GST_Docid
                 this.cancelledChequeDocId = newVal.cancelledChequeDocid
-                console.log('7878', this.cancelledChequeDocId);
 
                 if (!this.isCloned && newVal && newVal.length > 0) {
                     this.UploadDocs = JSON.parse(JSON.stringify(newVal));
-
-                    console.log('cloned');
-
                     // this.isCloned = true;
                 }
                 // else {
-                //     console.log(111);
-                console.log('cloned22', this.utilities);
                 if (this.utilities == null) {
-                    console.log('create empty utility');
-
                     this.utilities = [this.createUtilitiesType()]; // Insert mode
                     this.originalUtilities = [this.createUtilitiesType()]; // Insert mode
                 }
@@ -295,6 +285,11 @@ export default {
                 (v) => /^[A-Z]{4}0[A-Z0-9]{6}$/.test(v) || "Invalid IFSC format",
             ];
         }
+    },
+      setup() {
+        const snackbar = useSnackbarStore();
+        const loader = useLoaderStore()
+        return { snackbar, loader }
     },
     data() {
         return {
@@ -344,15 +339,11 @@ export default {
                 }
                 EventServices.GetIFSCDetails(lData).
                     then((response) => {
-                        console.log(response);
                         this.UserDocsInfo.bankName = response.data.IFSCdata.BANK
                         this.UserDocsInfo.Branch = response.data.IFSCdata.BRANCH
                         this.UserDocsInfo.ifsc_city = response.data.IFSCdata.CITY
                         this.UserDocsInfo.ifsc_Address = response.data.IFSCdata.ADDRESS
                         this.UserDocsInfo.ifsc_State = response.data.IFSCdata.STATE
-
-                        console.log(this.UserDocsInfo.bankName);
-
                     })
             }
         },
@@ -403,15 +394,12 @@ export default {
         },
 
         insertDocsInfo() {
-            const snackbar = useSnackbarStore()
-            const loader = useLoaderStore()
-
             if (this.UserDocsInfo.PropertyOwnership != 'Own Property') {
                 const lStartDate = new Date(this.UserDocsInfo.startDate)
                 const lEndDate = new Date(this.UserDocsInfo.endDate)
 
                 if (lEndDate < lStartDate) {
-                    snackbar.show("E", "End Date cannot be earlier than Start Date");
+                    this.snackbar.show("E", "End Date cannot be earlier than Start Date");
                     return;
                 }
             }
@@ -435,19 +423,12 @@ export default {
                 ifsc_State: this.UserDocsInfo.ifsc_State
             }
 
-            console.log('payload.startDate', payload.startDate);
-            console.log('payload.endDate', payload.endDate);
-
-
             if (this.GstDocs.NewGstFile) {
-                console.log('****');
                 lFormData.append('GST_Docid', this.GstDocs.NewGstFile)
             }
             if (this.chequeDocs.NewChequeFile) {
                 lFormData.append('cancelledChequeDocid', this.chequeDocs.NewChequeFile)
             }
-
-            console.log('this.utilities!!!,', this.utilities);
 
             this.utilities.forEach((util, index) => {
                 if (util.billDocid === "") {
@@ -473,28 +454,26 @@ export default {
 
 
             // Debug output
-            for (let [key, value] of lFormData.entries()) {
-                console.log('@@@@@', `${key}:`, value);
-            }
+            // for (let [key, value] of lFormData.entries()) {
+            //     console.log('@@@@@', `${key}:`, value);
+            // }
 
 
-            loader.show()
-            console.log("lFormData+++", lFormData);
-
+            this.loader.show()
             EventServices.insertDocsInfo(lFormData)
                 .then((response) => {
 
                     if (response.data.status == 'S') {
                         this.$emit('changePage', 'N');
-                        loader.hide()
+                        this.loader.hide()
                     } else {
-                        loader.hide()
-                        snackbar.show(response.data.status, response.data.msg)
+                        this.loader.hide()
+                        this.snackbar.show(response.data.status, response.data.msg)
                     }
                 })
                 .catch((error) => {
                     console.log(error)
-                    loader.hide()
+                    this.loader.hide()
                 })
         }
     },

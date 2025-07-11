@@ -2,9 +2,9 @@
     <div class="mx-5 mt-10">
         <div v-for="(room, index) in roomForms" :key="index">
             <v-alert class="mb-8" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
-            <v-icon icon="mdi-bed" start></v-icon>
-            <strong>Room Type  {{ index + 1 }}</strong>
-        </v-alert>
+                <v-icon icon="mdi-bed" start></v-icon>
+                <strong>Room Type {{ index + 1 }}</strong>
+            </v-alert>
 
 
             <v-row>
@@ -91,13 +91,13 @@
             </v-row>
             <v-row>
                 <v-col class="d-flex justify-start mr-10" v-if="roomForms.length > 1">
-                        <v-btn size="small" variant="tonal" @click="removeRoomType(index)" class="text-none"
+                    <v-btn size="small" variant="tonal" @click="removeRoomType(index)" class="text-none"
                         prepend-icon="mdi-close-box" color="warning">Remove
                         Room</v-btn>
                 </v-col>
 
                 <v-col class="d-flex justify-end mr-10" v-if="index === roomForms.length - 1">
-                        <v-btn size="small" variant="tonal" class="text-none" prepend-icon="mdi-plus-box" color="teal"
+                    <v-btn size="small" variant="tonal" class="text-none" prepend-icon="mdi-plus-box" color="teal"
                         @click="addRoomType">Add
                         Room</v-btn>
                 </v-col>
@@ -112,7 +112,7 @@
             </v-col>
             <v-col class="d-flex justify-end mb-10 mr-10">
                 <v-btn color="teal-darken-4" @click="submitAllRooms">Next
-            <v-icon icon="mdi-fast-forward" end></v-icon>
+                    <v-icon icon="mdi-fast-forward" end></v-icon>
 
                 </v-btn>
             </v-col>
@@ -149,6 +149,11 @@ export default {
             immediate: true,
             deep: true
         }
+    },
+    setup() {
+        const snackbar = useSnackbarStore();
+        const loader = useLoaderStore()
+        return { snackbar, loader }
     },
     data() {
         return {
@@ -203,52 +208,47 @@ export default {
                 this.$emit('changePage', 'N');
                 return;
             }
-
-            const snackbar = useSnackbarStore()
-            const loader = useLoaderStore()
             const val = {
                 roomsArr: this.roomForms
             }
-            loader.show()
+            this.loader.show()
 
             EventServices.InsertRoomsArr(val)
                 .then((response) => {
 
                     if (response.data.status == 'S') {
                         this.$emit('changePage', 'N');
-                        loader.hide()
+                        this.loader.hide()
                     } else {
-                        loader.hide()
+                        this.loader.hide()
                         snackbar.show(response.data.status, response.data.msg)
                     }
                 })
                 .catch((error) => {
                     console.log(error)
-                    loader.hide()
+                    this.loader.hide()
                 })
         }
     },
     mounted() {
-        const snackbar = useSnackbarStore()
-        const loader = useLoaderStore()
 
-        loader.show()
+        this.loader.show()
         EventServices.GetRoomDropDown()
             .then((response) => {
 
                 if (response.data.status == 'S') {
-                    loader.hide()
+                    this.loader.hide()
                     this.roomAmenities = response.data.roomAmenities
                     this.roomTypes = response.data.roomTypes
                     this.roomView = response.data.roomView
                 } else {
-                    snackbar.show(response.data.status, response.data.msg)
-                    loader.hide()
+                    this.snackbar.show(response.data.status, response.data.msg)
+                    this.loader.hide()
                 }
             })
             .catch((error) => {
                 console.log(error)
-                loader.hide()
+                this.loader.hide()
             })
     },
 }

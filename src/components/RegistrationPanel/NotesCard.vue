@@ -31,7 +31,8 @@
                 <h3 class="my-10">Hotel Registered successfully...</h3>
                 <!-- <v-card-text>Hotel Registered successfully.</v-card-text>  -->
                 <v-card-actions class="justify-center">
-                    <v-btn block prepend-icon="mdi-check-circle" color="green" variant="flat" @click="ClearSession">Click To Proceed</v-btn>
+                    <v-btn block prepend-icon="mdi-check-circle" color="green" variant="flat"
+                        @click="ClearSession">Click To Proceed</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -61,6 +62,11 @@ export default {
             deep: true
         },
     },
+    setup() {
+        const snackbar = useSnackbarStore();
+        const loader = useLoaderStore()
+        return { snackbar, loader }
+    },
     data() {
         return {
             originalDesc: "",
@@ -74,8 +80,6 @@ export default {
         },
         InsertDescDetails() {
 
-            const snackbar = useSnackbarStore();
-            const loader = useLoaderStore()
             if (this.modifiedDesc == this.originalDesc) {
                 this.CompletedCard = true
             }
@@ -83,44 +87,40 @@ export default {
                 var lData = {
                     description: this.modifiedDesc
                 }
-                loader.show()
+                this.loader.show()
                 EventServices.InsertDescInfo(lData)
                     .then((response) => {
                         if (response.data.status == "S") {
-                            loader.hide()
+                            this.loader.hide()
                             this.CompletedCard = true
                         }
                         else {
-                            loader.hide()
-                            snackbar.show(response.data.status, response.data.msg)
+                            this.loader.hide()
+                            this.snackbar.show(response.data.status, response.data.msg)
                         }
                     }).catch((error) => {
                         console.log(error);
-                        loader.hide()
+                        this.loader.hide()
                     })
-
             }
         },
 
         ClearSession() {
-            const snackbar = useSnackbarStore();
-            const loader = useLoaderStore()
-
-            loader.show()
+            this.loader.show()
             EventServices.ClearSession()
                 .then((response) => {
                     if (response.data.status == "S") {
-                        loader.hide()
+                        this.loader.hide()
                         this.CompletedCard = false
                         window.location.reload()
                     }
                     else {
-                        loader.hide()
-                        snackbar.show(response.data.status, response.data.msg)
+                        this.loader.hide()
+                        this.snackbar.show(response.data.status, response.data.msg)
                     }
                 }).catch((error) => {
                     console.log(error);
-                    loader.hide()
+                    this.loader.hide()
                 })
         }
     }

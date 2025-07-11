@@ -63,6 +63,11 @@ export default {
             deep: true
         },
     },
+    setup() {
+        const snackbar = useSnackbarStore();
+        const loader = useLoaderStore()
+        return { snackbar, loader }
+    },
     data() {
         return {
             originalMealsInfo: {} as any,
@@ -81,28 +86,26 @@ export default {
             return JSON.stringify(this.originalMealsInfo) !== JSON.stringify(this.UserMealsInfo);
         },
         insertMealsInfo() {
-            const snackbar = useSnackbarStore();
-            const loader = useLoaderStore()
 
             if (!this.isMealsDataChanged()) {
                 this.$emit('changePage', 'N');
                 return;
             }
-            loader.show()
+            this.loader.show()
             EventServices.InsertMealsInfo(this.UserMealsInfo)
                 .then((response) => {
                     if (response.data.status == "S") {
-                        loader.hide()
+                        this.loader.hide()
                         this.originalMealsInfo = JSON.parse(JSON.stringify(this.UserMealsInfo));
                         this.$emit('changePage', 'N');
                     }
                     else {
-                        loader.hide()
-                        snackbar.show(response.data.status, response.data.msg)
+                        this.loader.hide()
+                        this.snackbar.show(response.data.status, response.data.msg)
                     }
                 }).catch((error) => {
                     console.log(error);
-                    loader.hide()
+                    this.loader.hide()
                 })
         }
     }

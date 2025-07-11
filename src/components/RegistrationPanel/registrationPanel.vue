@@ -16,7 +16,7 @@
 
       <v-tabs :model-value="tab" grow show-arrows color="teal" class="text--capitalize"
         @update:modelValue="validateBeforeTabChange" bg-color="teal-lighten-5">
-        <v-tab v-for="(step, index) in registrationSteps" :key="index" :value="index" class="text-none" >
+        <v-tab v-for="(step, index) in registrationSteps" :key="index" :value="index" class="text-none">
           <v-icon class="mr-1" color="teal" left>{{ step.icon }}</v-icon>
           {{ step.label }}
         </v-tab>
@@ -89,7 +89,10 @@ export default {
     PropertyDetailsCard,
     NotesCard
   },
-  computed: {
+  setup() {
+    const snackbar = useSnackbarStore();
+    const loader = useLoaderStore()
+    return { snackbar, loader }
   },
   data() {
     return {
@@ -191,11 +194,7 @@ export default {
         clientId: clientId,
         stage: this.registrationSteps[tabIndex].label
       }
-
-      const snackbar = useSnackbarStore();
-      const loader = useLoaderStore()
-
-      loader.show()
+      this.loader.show()
 
       EventServices.GetUserDetails(lReq)
         .then((response) => {
@@ -203,7 +202,7 @@ export default {
 
           if (response.data.status == "S") {
 
-            loader.hide()
+            this.loader.hide()
             this.basicInfo = response.data.basicInfo
             this.locationInfo = response.data.locationInfo
             this.mealsInfo = response.data.mealsInfo
@@ -217,12 +216,12 @@ export default {
 
           }
           else {
-            snackbar.show(response.data.status, response.data.msg)
-            loader.hide()
+            this.snackbar.show(response.data.status, response.data.msg)
+            this.loader.hide()
           }
         }).catch((error) => {
           console.log(error);
-          loader.hide()
+          this.loader.hide()
         })
     }
   },

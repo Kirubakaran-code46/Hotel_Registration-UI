@@ -83,21 +83,15 @@ export default {
             deep: true
         }
     },
+      setup() {
+        const snackbar = useSnackbarStore();
+        const loader = useLoaderStore()
+        return { snackbar, loader }
+    },
     data() {
         return {
             originalBasicInfo: {} as any,
             isCloned: false,
-            // basicInfo: {
-            //     hotelName: "",
-            //     propertyType: "",
-            //     starCategory: "",
-            //     yearOfConstruction: "",
-            //     mobileCode: "91",
-            //     primaryMobile: "",
-            //     secondaryMobile: "",
-            //     email: "",
-            //     channelManager: "",
-            // },
             propertyTypes: [],
             countryCodes: [],
             requiredRule: [(v: string) => !!v || "Filed is Required !"],
@@ -150,8 +144,6 @@ export default {
             }
         },
         async insertDetails() {
-            const snackbar = useSnackbarStore();
-            const loader = useLoaderStore()
             const form = this.$refs.inputValidation as InstanceType<typeof VForm>;
             const result = await form?.validate();
 
@@ -161,12 +153,12 @@ export default {
                     return;
                 }
 
-                loader.show()
+                this.loader.show()
                 // INSERT OR UPDATE BASIC INFO
                 EventServices.InsertBasicInfo(this.UserbasicInfo)
                     .then((response) => {
                         if (response.data.status == "S") {
-                            loader.hide()
+                            this.loader.hide()
                             this.originalBasicInfo = JSON.parse(JSON.stringify(this.UserbasicInfo));
                             // this.$emit('validated')
                             this.$emit('validated', true)
@@ -175,37 +167,33 @@ export default {
 
                         }
                         else {
-                            snackbar.show(response.data.status, response.data.msg)
-                            loader.hide()
+                            this.snackbar.show(response.data.status, response.data.msg)
+                            this.loader.hide()
                         }
                     }).catch((error) => {
                         console.log(error);
-                        loader.hide()
+                        this.loader.hide()
                     })
 
-            } else {
-                console.log("Form has errors:", result?.errors);
             }
         },
     },
     mounted() {
-        const snackbar = useSnackbarStore();
-        const loader = useLoaderStore()
-
-        loader.show()
+        this.loader.show()
         EventServices.GetPropertyTypes()
             .then((response) => {
                 if (response.data.status == "S") {
                     this.propertyTypes = response.data.propertyTypes
                     this.countryCodes = response.data.countryCode
-                    loader.hide()
+                    this.loader.hide()
                 }
                 else {
-                    snackbar.show(response.data.status, response.data.msg)
+                    this.snackbar.show(response.data.status, response.data.msg)
+                    this.loader.hide()
                 }
             }).catch((error) => {
                 console.log(error);
-                loader.hide()
+                this.loader.hide()
             })
     }
 }
