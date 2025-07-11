@@ -1,6 +1,6 @@
 <template>
     <div class="mx-5">
-            <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+        <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
             <strong>Check-in / Check-out Policy</strong>
         </v-alert>
 
@@ -86,9 +86,9 @@
             </v-col>
         </v-row>
 
-            <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+        <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
             <strong>Cancellation Policy</strong>
-            </v-alert>
+        </v-alert>
         <v-row>
             <v-col cols="12" md="4">
                 <v-select :items="CancellationPoliciesArr" color="teal" label="Cancellation Policy" density="compact"
@@ -96,9 +96,9 @@
             </v-col>
         </v-row>
 
-            <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+        <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
             <strong>Property Rules</strong>
-            </v-alert>
+        </v-alert>
         <v-row>
             <v-col cols="12" md="4">
                 <v-select :items="YesOrNoArr" color="teal" label="Do you allow unmarried coupled ?" density="compact"
@@ -143,10 +143,10 @@
                     density="compact" variant="outlined" v-model="UserPoliciesInfo.accepted_proofs" />
             </v-col>
         </v-row>
-        
-            <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+
+        <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
             <strong>Custom Property Rules</strong>
-            </v-alert>
+        </v-alert>
 
 
         <v-row>
@@ -230,6 +230,11 @@ export default {
             }
         },
     },
+    setup() {
+        const snackbar = useSnackbarStore();
+        const loader = useLoaderStore()
+        return { snackbar, loader }
+    },
 
     data() {
         return {
@@ -300,25 +305,23 @@ export default {
                 this.$emit('changePage', 'N');
                 return;
             }
-            const snackbar = useSnackbarStore()
-            const loader = useLoaderStore()
 
-            loader.show()
+            this.loader.show()
 
             EventServices.InsertPoliciesData(this.UserPoliciesInfo)
                 .then((response) => {
 
                     if (response.data.status == 'S') {
                         this.$emit('changePage', 'N');
-                        loader.hide()
+                        this.loader.hide()
                     } else {
-                        loader.hide()
-                        snackbar.show(response.data.status, response.data.msg)
+                        this.loader.hide()
+                        this.snackbar.show(response.data.status, response.data.msg)
                     }
                 })
                 .catch((error) => {
                     console.log(error)
-                    loader.hide()
+                    this.loader.hide()
                 })
 
         }
@@ -331,24 +334,21 @@ export default {
             this.rawCheckOutTime = this.convertTo24Hour(this.UserPoliciesInfo.check_out)
         }
 
-        const snackbar = useSnackbarStore()
-        const loader = useLoaderStore()
-
-        loader.show()
+        this.loader.show()
         EventServices.getPoliciesDropdown()
             .then((response) => {
                 if (response.data.status == 'S') {
-                    loader.hide()
+                    this.loader.hide()
                     this.identityProofArr = response.data.identityProofs
                     this.CancellationPoliciesArr = response.data.cancellationPolicies
                 } else {
-                    snackbar.show(response.data.status, response.data.msg)
-                    loader.hide()
+                    this.snackbar.show(response.data.status, response.data.msg)
+                    this.loader.hide()
                 }
             })
             .catch((error) => {
                 console.log(error)
-                loader.hide()
+                this.loader.hide()
             })
     },
 }

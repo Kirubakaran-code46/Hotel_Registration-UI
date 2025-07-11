@@ -1,6 +1,6 @@
 <template>
     <div class="mx-5">
-            <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
+        <v-alert class="my-5" border="start" color="teal-darken-4" variant="tonal" height="4" width="300">
             <strong>Property Images</strong>
         </v-alert>
         <v-row>
@@ -19,7 +19,8 @@
                 <template v-if="UserPropertyInfo[field.key] && !changingFields.has(field.key)">
                     <v-text-field :label="field.label" :model-value="UserPropertyInfo[field.key]" readonly
                         variant="outlined" density="compact" color="teal" class="mb-1" />
-                    <v-btn size="small" color="teal" variant="text" class="mt-n4 mb-2 text-none" @click="changingFields.add(field.key)">
+                    <v-btn size="small" color="teal" variant="text" class="mt-n4 mb-2 text-none"
+                        @click="changingFields.add(field.key)">
                         (Change)
                     </v-btn>
                 </template>
@@ -58,6 +59,11 @@ export default {
             required: true,
         }
     },
+    setup() {
+        const snackbar = useSnackbarStore();
+        const loader = useLoaderStore()
+        return { snackbar, loader }
+    },
     data() {
         return {
             fields: [
@@ -91,11 +97,7 @@ export default {
             }
         },
         async InsertProperty() {
-            const snackbar = useSnackbarStore()
-            const loader = useLoaderStore()
             if (this.changedFields.size === 0) {
-                console.log(1111);
-
                 this.$emit('changePage', 'N');
                 return;
             }
@@ -108,27 +110,25 @@ export default {
                 }
             }
 
-            for (let [key, value] of formData.entries()) {
-                console.log('@@@@@', `${key}:`, value);
-            }
-
+            // for (let [key, value] of formData.entries()) {
+            //     console.log('@@@@@', `${key}:`, value);
+            // }
+            this.loader.show()
             EventServices.InsertPropertyInfo(formData)
                 .then((response) => {
-                    console.log(response);
-
                     if (response.data.status == 'S') {
                         this.changedFields.clear();
                         this.changingFields.clear();
-                        loader.hide()
+                        this.loader.hide()
                         this.$emit('changePage', 'N');
                     } else {
-                        loader.hide()
-                        snackbar.show(response.data.status, response.data.msg)
+                        this.loader.hide()
+                        this.snackbar.show(response.data.status, response.data.msg)
                     }
                 })
                 .catch((error) => {
                     console.log(error)
-                    loader.hide()
+                    this.loader.hide()
                 })
 
         }

@@ -66,6 +66,11 @@ export default {
             deep: true
         },
     },
+      setup() {
+        const snackbar = useSnackbarStore();
+        const loader = useLoaderStore()
+        return { snackbar, loader }
+    },
     data() {
         return {
             originalAvailabilityInfo: {},
@@ -111,14 +116,12 @@ export default {
             this.$emit('changePage', val);
         },
         insertAvailabilityInfo() {
-            const snackbar = useSnackbarStore();
-            const loader = useLoaderStore()
 
             const lStartDate = new Date(this.UserAvailabilityInfo.startDate)
             const lEndDate = new Date(this.UserAvailabilityInfo.endDate)
 
             if (lEndDate < lStartDate) {
-                snackbar.show("E", "End Date cannot be earlier than Start Date");
+                this.snackbar.show("E", "End Date cannot be earlier than Start Date");
                 return;
             }
 
@@ -127,21 +130,21 @@ export default {
                 return;
             }
 
-            loader.show()
+            this.loader.show()
             EventServices.InsertAvailabilityInfo(this.UserAvailabilityInfo)
                 .then((response) => {
                     if (response.data.status == "S") {
-                        loader.hide()
+                        this.loader.hide()
                         this.originalAvailabilityInfo = JSON.parse(JSON.stringify(this.UserAvailabilityInfo));
                         this.$emit('changePage', 'N');
                     }
                     else {
-                        loader.hide()
-                        snackbar.show(response.data.status, response.data.msg)
+                        this.loader.hide()
+                        this.snackbar.show(response.data.status, response.data.msg)
                     }
                 }).catch((error) => {
                     console.log(error);
-                    loader.hide()
+                    this.loader.hide()
                 })
         }
     },
